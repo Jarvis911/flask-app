@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIC RECOMMENDER</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{ url_for('static', filename='product_names.js') }}" defer></script>
+    <script>
+        $(document).ready(function() {
+            $('.product-dropdown').select2({
+                placeholder: 'Select a product',
+                allowClear: true,
+                width: 'resolve'
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>SIC RECOMMENDER</h1>
+        <form method="POST" action="/predict">
+            <select class="product-dropdown" id="product1" name="product1">
+                <option value="" disabled selected>Select Product Name 1</option>
+            </select>
+            <select class="product-dropdown" id="product2" name="product2">
+                <option value="" disabled selected>Select Product Name 2</option>
+            </select>
+            <select class="product-dropdown" id="product3" name="product3">
+                <option value="" disabled selected>Select Product Name 3</option>
+            </select>
+            <button class="btn_submit" type="submit">Get Recommendations</button>
+        </form>
+        <div id="result">
+            {% if recommendations %}
+            <h2>Top 5 Recommendations</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Sale Price</th>
+                        <th>Estimated Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rec in recommendations %}
+                    <tr>
+                        <td>{{ rec.product_name }}</td>
+                        <td>{{ "%.2f"|format(rec.sale_price) }}</td>
+                        <td>{{ "%.4f"|format(rec.estimated_rating) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+        
+    </div>
+</body>
+
+</html>
